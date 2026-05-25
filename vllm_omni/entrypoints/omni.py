@@ -118,6 +118,7 @@ class Omni(OmniBase):
             wall_start_ts = time.time()
             req_final_stage_ids: dict[str, int] = {}
 
+            # add request to the engine
             for req_id, prompt in zip(request_ids, request_prompts):
                 prompt_modalities = prompt.get("modalities", None) if isinstance(prompt, dict) else None
                 final_stage_id = self._compute_final_stage_id(prompt_modalities)
@@ -157,6 +158,7 @@ class Omni(OmniBase):
                 pbar = tqdm_func(total=len(request_ids), desc="Processed prompts", dynamic_ncols=True)
 
             while active_reqs:
+                # Polling async engine
                 msg = self.engine.try_get_output()
 
                 should_continue, req_id, stage_id, req_state = self._handle_output_message(msg)
