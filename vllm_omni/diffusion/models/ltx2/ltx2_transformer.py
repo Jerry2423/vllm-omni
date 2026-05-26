@@ -1344,8 +1344,10 @@ class LTX2AudioVideoRotaryPosEmbed(nn.Module):
         elif self.modality == "audio":
             max_positions = (self.base_num_frames,)
         # [B, num_pos_dims, num_patches] --> [B, num_patches, num_pos_dims]
+        # 类似于rope里面的m，只是每个token有3个m的值，分别对应frame，w，h的pos
         grid = torch.stack([coords[:, i] / max_positions[i] for i in range(num_pos_dims)], dim=-1).to(device)
         # Number of spatiotemporal dimensions (3 for video, 1 for audio and cross attn) times 2 for cos, sin
+        # num_pos_dims = 3表示3维度，视频维度
         num_rope_elems = num_pos_dims * 2
 
         # 3. Create a 1D grid of frequencies for RoPE
